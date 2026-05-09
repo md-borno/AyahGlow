@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  background: #f8f7f4;
+  color: #111827;
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+}
+
+.font-arabic {
+  font-family: 'Amiri', serif;
+}
