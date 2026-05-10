@@ -1,8 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind utilities;
+html {
+  scroll-behavior: smooth;
+}
 
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.font-arabic {
+  font-family: 'Amiri', serif;
+  direction: rtl;
+}
+
+.font-translation-en {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-translation-bn {
+  font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+.range-slider {
+  width: 100%;
+}
+
+.range-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 
 * {
   box-sizing: border-box;
 }
@@ -15,9 +46,6 @@ body {
   margin: 0;
   padding: 0;
 
-  background: #f8f7f4;
-  color: #111827;
-
   font-family:
     Inter,
     system-ui,
@@ -26,4 +54,4 @@ body {
 
 .font-arabic {
   font-family: 'Amiri', serif;
-}
+} */

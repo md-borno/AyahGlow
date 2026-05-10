@@ -5,19 +5,27 @@ import clsx from 'clsx'
 import AyahActions from './AyahActions'
 
 interface Props {
+  surahId: number
   ayahNumber: number
   arabic: string
   translation: string
+  totalAyahs: number
+  arabicFontSize: number
+  translationFontSize: number
+  translationFontClass: string
   active?: boolean
-  onPlay: () => void
 }
 
 export default function AyahCard({
+  surahId,
   ayahNumber,
   arabic,
   translation,
+  totalAyahs,
+  arabicFontSize,
+  translationFontSize,
+  translationFontClass,
   active,
-  onPlay,
 }: Props) {
   return (
     <div
@@ -32,14 +40,24 @@ export default function AyahCard({
           {ayahNumber}
         </div>
 
-        <AyahActions onPlay={onPlay} />
+        <AyahActions
+          surahNumber={surahId}
+          ayahNumber={ayahNumber}
+          totalAyahs={totalAyahs}
+        />
       </div>
 
-      <p className="text-right text-5xl leading-[110px] mb-10 font-arabic">
+      <p
+        className="text-right leading-[110px] mb-10 font-arabic"
+        style={{ fontSize: arabicFontSize }}
+      >
         {arabic}
       </p>
 
-      <p className="text-lg leading-10 text-gray-700 dark:text-gray-300">
+      <p
+        className={`${translationFontClass} leading-8 text-gray-700 dark:text-gray-300`}
+        style={{ fontSize: translationFontSize }}
+      >
         {translation}
       </p>
     </div>

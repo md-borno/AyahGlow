@@ -12,5 +12,7 @@ export default async function HomePage() {
 
       <SurahList surahs={surahs} />
     </main>
+  
   )
 }
+
