@@ -20,26 +20,32 @@ export default function AyahActions({
   totalAyahs,
 }: Props) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-col items-start gap-3">
+      
+      {/* Audio Player */}
       <AyahButtonPlayer
         surahNumber={surahNumber}
         ayahNumber={ayahNumber}
         totalAyahs={totalAyahs}
       />
 
-      <button className="w-10 h-10 rounded-xl border flex items-center justify-center hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+      {/* Bookmark */}
+      <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         <Bookmark size={16} />
       </button>
 
-      <button className="w-10 h-10 rounded-xl border flex items-center justify-center hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+      {/* Copy */}
+      <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         <Copy size={16} />
       </button>
 
-      <button className="w-10 h-10 rounded-xl border flex items-center justify-center hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+      {/* Share */}
+      <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         <Share2 size={16} />
       </button>
 
-      <button className="w-10 h-10 rounded-xl border flex items-center justify-center hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800">
+      {/* More */}
+      <button className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
         <MoreHorizontal size={16} />
       </button>
     </div>

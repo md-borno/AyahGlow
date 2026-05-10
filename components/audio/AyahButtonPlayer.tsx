@@ -161,17 +161,15 @@ export default function AyahButtonPlayer({
   return (
     <button
       onClick={togglePlay}
-      className="flex items-center gap-2 px-3 py-2 rounded-xl bg-black text-white"
+      className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
     >
       {playing ? (
         <>
           <Pause size={16} />
-          Pause
         </>
       ) : (
         <>
           <Play size={16} />
-          Play
         </>
       )}
     </button>

@@ -1,7 +1,9 @@
-export interface Ayah {
-  number: number
-  text: string
-  numberInSurah: number
-  juz: number
-  page: number
-}
+
+
+type AyahType = {
+  numberInSurah: number;
+  text: string;
+  translation: string;
+  audio: string;
+};
+

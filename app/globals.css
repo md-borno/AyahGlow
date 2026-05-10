@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&display=swap');
 @import "tailwindcss";
-
+@variant dark (&:where(.dark, .dark *));
 html {
   scroll-behavior: smooth;
 }
@@ -9,8 +9,13 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
-.font-arabic {
+.font-arabic-amiri {
   font-family: 'Amiri', serif;
+  direction: rtl;
+}
+
+.font-arabic-scheherazade {
+  font-family: 'Scheherazade New', serif;
   direction: rtl;
 }
 
@@ -32,26 +37,3 @@ body {
   gap: 1rem;
   margin-bottom: 0.5rem;
 }
-
-/* 
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-
-  font-family:
-    Inter,
-    system-ui,
-    sans-serif;
-}
-
-.font-arabic {
-  font-family: 'Amiri', serif;
-} */

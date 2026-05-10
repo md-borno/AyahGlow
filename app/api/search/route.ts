@@ -16,7 +16,10 @@ async function getSurah(id: number) {
     return {
       surah: {
         number: a.data?.number || id,
+        name: a.data?.name || '',
         englishName: a.data?.englishName || `Surah ${id}`,
+        englishNameTranslation: a.data?.englishNameTranslation || '',
+        numberOfAyahs: a.data?.numberOfAyahs || 0,
       },
       ayahs: [],
     };
@@ -25,7 +28,10 @@ async function getSurah(id: number) {
   return {
     surah: {
       number: a.data.number,
+      name: a.data.name,
       englishName: a.data.englishName,
+      englishNameTranslation: a.data.englishNameTranslation,
+      numberOfAyahs: a.data.numberOfAyahs,
     },
     ayahs: a.data.ayahs.map(
       (ayah: any, i: number) => ({

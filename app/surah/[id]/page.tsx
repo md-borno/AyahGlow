@@ -1,49 +1,22 @@
 import ReadingLayout from '@/components/layout/ReadingLayout'
-
-import SurahHeader from '@/components/quran/SurahHeader'
-
-import ReadingClient from '@/components/quran/ReadingClient'
-
+import SurahReaderClient from '@/components/quran/SurahReaderClient'
 import { getSurah } from '@/services/quran.service'
 
 interface Props {
-  params: Promise<{
+  params: {
     id: string
-  }>
+  }
 }
 
-export default async function SurahPage({
-  params,
-}: Props) {
-  const { id } = await params
+export const dynamic = 'force-dynamic'
 
-  const surahId = Number(id)
-
+export default async function SurahPage({ params }: Props) {
+  const surahId = Number(params.id)
   const data = await getSurah(surahId)
 
   return (
     <ReadingLayout>
-      <SurahHeader
-        englishName={
-          data.arabic.englishName
-        }
-        arabicName={
-          data.arabic.name
-        }
-        ayahs={
-          data.arabic.numberOfAyahs
-        }
-      />
-
-      <ReadingClient
-        surahId={surahId}
-        arabicAyahs={
-          data.arabic.ayahs
-        }
-        translationAyahs={
-          data.translation.ayahs
-        }
-      />
+      <SurahReaderClient surahId={surahId} data={data} />
     </ReadingLayout>
   )
 }

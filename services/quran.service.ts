@@ -2,8 +2,26 @@ import { Surah } from '@/types/surah'
 
 const BASE_URL = 'https://api.alquran.cloud/v1'
 
+async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    const res = await fetch(url, options)
+
+    if (res.ok) {
+      return res
+    }
+
+    if (attempt === retries) {
+      throw new Error(`Failed to fetch ${url} after ${retries} attempts`)
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500 * attempt))
+  }
+
+  throw new Error(`Failed to fetch ${url}`)
+}
+
 export async function getSurahs(): Promise<Surah[]> {
-  const res = await fetch(`${BASE_URL}/surah`, {
+  const res = await fetchWithRetry(`${BASE_URL}/surah`, {
     next: {
       revalidate: 3600,
     },
@@ -19,23 +37,18 @@ export async function getSurahs(): Promise<Surah[]> {
 }
 
 export async function getSurah(id: number) {
-  const arabicRes = await fetch(
-    `${BASE_URL}/surah/${id}/quran-uthmani`,
-    {
+  const [arabicRes, translationRes] = await Promise.all([
+    fetchWithRetry(`${BASE_URL}/surah/${id}/quran-uthmani`, {
       next: {
         revalidate: 3600,
       },
-    }
-  )
-
-  const translationRes = await fetch(
-    `${BASE_URL}/surah/${id}/en.asad`,
-    {
+    }),
+    fetchWithRetry(`${BASE_URL}/surah/${id}/en.asad`, {
       next: {
         revalidate: 3600,
       },
-    }
-  )
+    }),
+  ])
 
   if (!arabicRes.ok || !translationRes.ok) {
     throw new Error('Failed to fetch surah')
@@ -48,4 +61,12 @@ export async function getSurah(id: number) {
     arabic: arabicData.data,
     translation: translationData.data,
   }
+}
+
+export async function getJuz(id: number) {
+  const res = await fetch(`/api/juz/${id}`)
+
+  if (!res.ok) throw new Error('Failed to fetch Juz')
+
+  return res.json()
 }

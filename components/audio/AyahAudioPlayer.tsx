@@ -114,12 +114,10 @@ export default function AyahAudioPlayer({
         {playing ? (
           <>
             <Pause size={18} />
-            Pause
           </>
         ) : (
           <>
             <Play size={18} />
-            Play
           </>
         )}
       </button>

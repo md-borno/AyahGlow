@@ -6,3 +6,20 @@ export interface Surah {
   numberOfAyahs: number
   revelationType: string
 }
+
+export interface JuzSurah {
+  surahs: any
+  number: number | undefined
+  surahNumber: number
+  surahName: string
+  ayahs: {
+    ayahNumber: number
+    text: string
+    translation?: string
+  }[]
+}
+
+export interface JuzResponse {
+  juz: number
+  surahs: JuzSurah[]
+}
