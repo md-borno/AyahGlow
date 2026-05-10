@@ -51,11 +51,11 @@ export default function SurahHeader({
         </div>
 
         {/* Right Arabic name */}
-        {/* <div className="flex-shrink-0 text-right">
+        <div className="flex-shrink-0 text-right dark:text-white">
           <p className="text-3xl sm:text-5xl font-arabic-amiri leading-tight">
             {arabicName}
           </p>
-        </div> */}
+        </div>
 
       </div>
     </div>

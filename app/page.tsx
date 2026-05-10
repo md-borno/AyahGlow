@@ -508,23 +508,23 @@ export default function HomePage() {
           </div>
 
 
-         <div className="rounded-2xl p-5 bg-gray-100 dark:bg-green-950/40 border border-gray-200 dark:border-green-900 shadow-sm">
-  <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-    Help spread the knowledge of Islam
-  </h1>
+          <div className="rounded-2xl p-5 bg-gray-100 dark:bg-green-950/40 border border-gray-200 dark:border-green-900 shadow-sm">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+              Help spread the knowledge of Islam
+            </h1>
 
-  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
-    Your regular support helps us reach our brothers and sisters with the message of Islam. 
-    Join our mission and be part of meaningful change.
-  </p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+              Your regular support helps us reach our brothers and sisters with the message of Islam.
+              Join our mission and be part of meaningful change.
+            </p>
 
-  <Link
-  href="https://www.linkedin.com/in/adlul-islam/"
-  className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition inline-block"
->
-  Fpllow Me
-</Link>
-</div>
+            <Link
+              href="https://www.linkedin.com/in/adlul-islam/"
+              className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition inline-block"
+            >
+              Fpllow Me
+            </Link>
+          </div>
 
         </div>
       )}
@@ -599,8 +599,8 @@ export default function HomePage() {
         >
           {/* Left: title */}
           <div>
-            <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">Quran Mazid</h1>
-            <p className="text-[11px] text-gray-500 dark:text-gray-400">Read, Study, and Learn The Quran</p>
+            <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight ml-10">Quran Mazid</h1>
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 ml-10">Read, Study, and Learn The Quran</p>
           </div>
 
           {/* Right: search + theme toggle */}
@@ -638,12 +638,45 @@ export default function HomePage() {
         </header>
 
         {/* ── Desktop 3-column body ── */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="ml-6 flex flex-1 overflow-hidden">
+{/* ── Left Icon Rail (Desktop) ── */}
+<aside className="hidden lg:flex flex-col items-center justify-center gap-6 w-[50px] fixed left-0 top-0 h-screen z-50 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#060505]">
+  {/* Home */}
+  <button className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+    <BookOpen size={18} className="text-gray-600 dark:text-gray-300" />
+  </button>
 
+  {/* Surah */}
+  <button className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+    <Menu size={18} className="text-gray-600 dark:text-gray-300" />
+  </button>
+
+  {/* Search */}
+  <button
+    onClick={() => setSearchOpen(true)}
+    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+  >
+    <Search size={18} className="text-gray-600 dark:text-gray-300" />
+  </button>
+
+  {/* Messages / Notes */}
+  <button className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+    <span className="text-gray-600 dark:text-gray-300 text-sm">💬</span>
+  </button>
+
+  {/* Settings */}
+  <button
+    onClick={() => setMobilePanel('settings')}
+    className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+  >
+    <Settings size={18} className="text-gray-600 dark:text-gray-300" />
+  </button>
+
+</aside>
           {/* Left panel — surah list (always visible on desktop) */}
           <aside
             className="
-    fixed left-0 top-15
+    fixed left-[40px] top-15
     h-[calc(100vh-72px)]
     w-[330px]
     border-r border-gray-200 dark:border-gray-800
