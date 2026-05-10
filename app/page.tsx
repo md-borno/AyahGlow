@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import { getSurahs, getSurah, getJuz } from '@/services/quran.service'
+import { getSurahs, getSurah, getJuz, getPage } from '@/services/quran.service'
 import ReadingLayout from '@/components/layout/ReadingLayout'
 import SurahList from '@/components/quran/SurahList'
 import SurahReaderClient from '@/components/quran/SurahReaderClient'
+import ReadingClient from '@/components/quran/ReadingClient'
 import { useSettings } from '@/providers/settings-provider'
 import {
   Moon, Sun, Menu, X, Search, Settings,
@@ -12,6 +13,7 @@ import {
 } from 'lucide-react'
 import { Surah } from '@/types/surah'
 import JuzList from '@/components/quran/JuzzList'
+import Link from 'next/link'
 
 type Tab = 'Surah' | 'Juz' | 'Page'
 
@@ -28,6 +30,10 @@ export default function HomePage() {
   const [juzs, setJuzs] = useState<any[]>([])
   const [selectedJuzId, setSelectedJuzId] = useState(1)
   const [selectedJuzData, setSelectedJuzData] = useState<any>(null)
+  const [selectedPageId, setSelectedPageId] = useState(1)
+  const [selectedPageData, setSelectedPageData] = useState<any>(null)
+  const [juzLoading, setJuzLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false)
   // Mobile only
   const [mobilePanel, setMobilePanel] = useState<'surah' | 'settings' | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
@@ -35,6 +41,8 @@ export default function HomePage() {
   // Desktop right panel accordions
   const [readingOpen, setReadingOpen] = useState(false)
   const [fontOpen, setFontOpen] = useState(true)
+  const [showNavbar, setShowNavbar] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
 
   const {
     theme, setTheme,
@@ -44,21 +52,65 @@ export default function HomePage() {
     translationLanguage, setTranslationLanguage,
   } = useSettings()
 
+  const handleNextSurah = async () => {
+    const next = selectedSurahId + 1
+    if (next > surahs.length) return
+
+    setSelectedSurahId(next)
+  }
+
+  const handlePrevSurah = async () => {
+    const prev = selectedSurahId - 1
+    if (prev < 1) return
+
+    setSelectedSurahId(prev)
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        setShowNavbar(false)
+      } else {
+        setShowNavbar(true)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const surahsData = await getSurahs()
         setSurahs(surahsData)
-        const firstSurahData = await getSurah(1)
-        setSelectedSurahData(firstSurahData)
       } catch (error) {
         console.error('Failed to fetch data:', error)
-      } finally {
-        setLoading(false)
       }
     }
     fetchData()
   }, [])
+
+  useEffect(() => {
+    const fetchSelectedSurah = async () => {
+      setLoading(true)
+      try {
+        const data = await getSurah(selectedSurahId, translationLanguage)
+        setSelectedSurahData(data)
+      } catch (error) {
+        console.error('Failed to fetch surah:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchSelectedSurah()
+  }, [selectedSurahId, translationLanguage])
 
   useEffect(() => {
     if (!searchQuery || searchQuery.length < 2) {
@@ -70,7 +122,7 @@ export default function HomePage() {
       setSearchLoading(true)
       try {
         const response = await fetch(
-          `/api/search?q=${encodeURIComponent(searchQuery)}`,
+          `/api/search?q=${encodeURIComponent(searchQuery)}&lang=${translationLanguage}`,
           { signal: controller.signal }
         )
         if (!response.ok) throw new Error('Search failed')
@@ -88,18 +140,66 @@ export default function HomePage() {
     if (activeTab !== 'Juz') return
 
     const fetchJuz = async () => {
-      const allJuz = []
+      setJuzLoading(true)
+      try {
+        const results = await Promise.allSettled(
+          Array.from({ length: 30 }, (_, index) =>
+            getJuz(index + 1, translationLanguage)
+          )
+        )
 
-      for (let i = 1; i <= 30; i++) {
-        const res = await getJuz(i)
-        allJuz.push(res)
+        const successful = results
+          .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
+          .map((result) => result.value)
+
+        setJuzs(successful)
+      } catch (error) {
+        console.error('Failed to load Juz list:', error)
+      } finally {
+        setJuzLoading(false)
       }
-
-      setJuzs(allJuz)
     }
 
     fetchJuz()
-  }, [activeTab])
+  }, [activeTab, translationLanguage])
+
+  useEffect(() => {
+    if (activeTab !== 'Juz') return
+    if (!selectedJuzId) return
+
+    const fetchSelectedJuz = async () => {
+      setJuzLoading(true)
+      try {
+        const data = await getJuz(selectedJuzId, translationLanguage)
+        setSelectedJuzData(data)
+      } catch (error) {
+        console.error('Failed to fetch selected Juz:', error)
+      } finally {
+        setJuzLoading(false)
+      }
+    }
+
+    fetchSelectedJuz()
+  }, [activeTab, selectedJuzId, translationLanguage])
+
+  useEffect(() => {
+    if (activeTab !== 'Page') return
+
+    const fetchSelectedPage = async () => {
+      setPageLoading(true)
+      try {
+        const data = await getPage(selectedPageId, translationLanguage)
+        setSelectedPageData(data)
+      } catch (error) {
+        console.error('Failed to fetch page:', error)
+      } finally {
+        setPageLoading(false)
+      }
+    }
+
+    fetchSelectedPage()
+  }, [activeTab, selectedPageId, translationLanguage])
+
   const filteredSurahs = useMemo(
     () => surahs.filter((s) =>
       s.englishName.toLowerCase().includes(sidebarSearch.toLowerCase()) ||
@@ -110,15 +210,20 @@ export default function HomePage() {
   )
   const handleJuzSelect = async (juzId: number) => {
     setSelectedJuzId(juzId)
-    setLoading(true)
+    setJuzLoading(true)
 
     try {
-      const data = await getJuz(juzId)
+      const data = await getJuz(juzId, translationLanguage)
       setSelectedJuzData(data)
     } finally {
-      setLoading(false)
+      setJuzLoading(false)
     }
   }
+
+  const handlePageSelect = (pageId: number) => {
+    setSelectedPageId(pageId)
+  }
+
   const arabicFontClass = arabicFontFamily === 'Scheherazade New'
     ? 'font-arabic-scheherazade' : 'font-arabic-amiri'
 
@@ -129,15 +234,96 @@ export default function HomePage() {
     setSelectedSurahId(surahId)
     setSearchQuery('')
     setMobilePanel(null)
-    setLoading(true)
-    try {
-      const data = await getSurah(surahId)
-      setSelectedSurahData(data)
-    } catch (error) {
-      console.error('Failed to fetch surah:', error)
-    } finally {
-      setLoading(false)
+  }
+
+  const mainContent = () => {
+    if (searchQuery) return SearchContent
+
+    if (activeTab === 'Juz') {
+      if (juzLoading) {
+        return <div className="py-14 text-center text-gray-400">Loading Juz…</div>
+      }
+
+      if (!selectedJuzData) {
+        return <div className="py-14 text-center text-gray-400">Select a Juz to view its ayahs.</div>
+      }
+
+      const arabicAyahs = selectedJuzData.surahs.flatMap((surah: any) =>
+        surah.ayahs.map((ayah: any) => ({
+          ...ayah,
+          numberInSurah: ayah.ayahNumber,
+        }))
+      )
+
+      const translationAyahs = selectedJuzData.surahs.flatMap((surah: any) =>
+        surah.ayahs.map((ayah: any) => ({ text: ayah.translation || '' }))
+      )
+
+      return (
+        <div>
+          <div className="mb-5 rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-5">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Juz {selectedJuzData.juz}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {selectedJuzData.surahs.length} surahs included in this Juz.
+            </p>
+          </div>
+          <ReadingClient
+            surahId={selectedJuzData.surahs[0]?.surahNumber ?? selectedJuzId}
+            arabicAyahs={arabicAyahs}
+            translationAyahs={translationAyahs}
+            arabicFontSize={arabicFontSize}
+            translationFontSize={translationFontSize}
+            translationLanguage={translationLanguage}
+            arabicFontClass={arabicFontClass}
+            translationFontClass={translationFontClass}
+          />
+        </div>
+      )
     }
+
+    if (activeTab === 'Page') {
+      if (pageLoading) {
+        return <div className="py-14 text-center text-gray-400">Loading Page…</div>
+      }
+
+      if (!selectedPageData) {
+        return <div className="py-14 text-center text-gray-400">Select a page to view its ayahs.</div>
+      }
+
+      const translationAyahs = selectedPageData.ayahs.map((ayah: any) => ({ text: ayah.translation || '' }))
+
+      return (
+        <div>
+          <div className="mb-5 rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-5">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Page {selectedPageId}</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Displaying ayahs from page {selectedPageId}.</p>
+          </div>
+          <ReadingClient
+            surahId={selectedPageId}
+            arabicAyahs={selectedPageData.ayahs}
+            translationAyahs={translationAyahs}
+            arabicFontSize={arabicFontSize}
+            translationFontSize={translationFontSize}
+            translationLanguage={translationLanguage}
+            arabicFontClass={arabicFontClass}
+            translationFontClass={translationFontClass}
+          />
+        </div>
+      )
+    }
+
+    if (selectedSurahData) {
+      return (
+        <SurahReaderClient
+          surahId={selectedSurahId}
+          data={selectedSurahData}
+          onNextSurah={handleNextSurah}
+          onPrevSurah={handlePrevSurah}
+        />
+      )
+    }
+
+    return null
   }
 
   if (loading) {
@@ -184,7 +370,6 @@ export default function HomePage() {
       </div>
 
       {/* Scrollable list */}
-      {/* Scrollable list */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === 'Surah' && (
           <SurahList
@@ -207,7 +392,9 @@ export default function HomePage() {
             {Array.from({ length: 604 }, (_, i) => (
               <button
                 key={i + 1}
-                className="w-full text-left px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                type="button"
+                onClick={() => handlePageSelect(i + 1)}
+                className={`w-full text-left px-4 py-2 rounded-lg transition ${selectedPageId === i + 1 ? 'bg-green-50 text-green-700 dark:bg-green-950/40 dark:text-green-300' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
               >
                 Page {i + 1}
               </button>
@@ -222,7 +409,7 @@ export default function HomePage() {
   // Shared: Settings accordions
   // ─────────────────────────────────────────
   const SettingsPanel = (
-    <div>
+    <div >
       {/* Translation / Reading mode toggle */}
       <div className="flex gap-1 p-1 mb-5 bg-gray-100 dark:bg-gray-800 rounded-full">
         {['Translation', 'Reading'].map((mode) => (
@@ -320,7 +507,25 @@ export default function HomePage() {
             />
           </div>
 
-          
+
+         <div className="rounded-2xl p-5 bg-gray-100 dark:bg-green-950/40 border border-gray-200 dark:border-green-900 shadow-sm">
+  <h1 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+    Help spread the knowledge of Islam
+  </h1>
+
+  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+    Your regular support helps us reach our brothers and sisters with the message of Islam. 
+    Join our mission and be part of meaningful change.
+  </p>
+
+  <Link
+  href="https://www.linkedin.com/in/adlul-islam/"
+  className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-medium transition inline-block"
+>
+  Fpllow Me
+</Link>
+</div>
+
         </div>
       )}
     </div>
@@ -378,10 +583,20 @@ export default function HomePage() {
 
   return (
     <ReadingLayout>
-      <div className="hidden lg:flex flex-col h-full ">
+      <div className="hidden lg:flex flex-col pt-15 h-full">
 
         {/* ── Desktop top navbar ── */}
-        <header className="flex items-center justify-between px-6 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0">
+        <header
+          className={`
+    fixed top-0 left-0 right-0 z-50
+    flex items-center justify-between
+    px-6 py-3
+    bg-white dark:bg-[#0D0D0D]
+    border-b border-gray-200 dark:border-gray-800
+    transition-transform duration-300
+    ${showNavbar ? 'translate-y-0' : '-translate-y-full'}
+  `}
+        >
           {/* Left: title */}
           <div>
             <h1 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">Quran Mazid</h1>
@@ -426,23 +641,37 @@ export default function HomePage() {
         <div className="flex flex-1 overflow-hidden">
 
           {/* Left panel — surah list (always visible on desktop) */}
-          <aside className="w-[280px] shrink-0 flex flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden">
+          <aside
+            className="
+    fixed left-0 top-15
+    h-[calc(100vh-72px)]
+    w-[330px]
+    border-r border-gray-200 dark:border-gray-800
+    bg-white dark:bg-[#0D0D0D]
+    flex flex-col
+  "
+          >
             <div className="flex-1 overflow-hidden flex flex-col p-4">
               {SurahPanel}
             </div>
           </aside>
 
           {/* Center — reader */}
-          <main className="flex-1 overflow-y-auto bg-[#f8f7f4] dark:bg-gray-950">
+          <main
+            className="
+    ml-[330px]
+    
+    min-h-screen
+    bg-[#f8f7f4] dark:bg-gray-950
+  "
+          >
             <div className="w-full mx-auto ">
-              {searchQuery ? SearchContent : selectedSurahData
-                ? <SurahReaderClient surahId={selectedSurahId} data={selectedSurahData} />
-                : null}
+              {mainContent()}
             </div>
           </main>
 
           {/* Right panel — settings (always visible on desktop) */}
-          <aside className="w-[260px] shrink-0 flex flex-col border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-y-auto">
+          <aside className="w-[260px] shrink-0 flex flex-col border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0D0D0D] overflow-y-auto">
             <div className="p-4">
               {SettingsPanel}
             </div>
@@ -527,10 +756,9 @@ export default function HomePage() {
 
         {/* Mobile reader content */}
         <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-950 px-4 py-5">
-          {searchQuery ? SearchContent : selectedSurahData
-            ? <SurahReaderClient surahId={selectedSurahId} data={selectedSurahData} />
-            : null}
+          {mainContent()}
         </div>
+
       </div>
 
       {/* ══════════════════════════════════════════════════════

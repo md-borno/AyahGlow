@@ -6,7 +6,7 @@ export default function Sidebar() {
   return (
     <>
     </>
-    // <aside className="hidden lg:flex w-72 border-r bg-white dark:bg-[#0f172a] dark:border-gray-800 flex-col">
+    // <aside className="hidden lg:flex w-72 border-r bg-white dark:bg-[dark:bg-gray-900] dark:border-gray-800 flex-col">
     //   <div className="p-6 border-b dark:border-gray-800">
     //     <h1 className="text-2xl font-bold">
     //       AyahGlow

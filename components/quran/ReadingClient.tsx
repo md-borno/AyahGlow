@@ -5,25 +5,32 @@ import AyahCard from './AyahCard'
 
 interface Props {
   surahId: number
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   arabicAyahs: any[]
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   translationAyahs: any[]
+
+  onNextSurah?: () => void
+  onPrevSurah?: () => void
 
   arabicFontSize?: number
   translationFontSize?: number
   translationLanguage?: string
   arabicFontClass?: string
   translationFontClass?: string
-  onSettingsChange?: (settings: { arabicFontSize: number; translationFontSize: number; translationLanguage: string }) => void
+  onSettingsChange?: (settings: {
+    arabicFontSize: number
+    translationFontSize: number
+    translationLanguage: string
+  }) => void
 }
 
 export default function ReadingClient({
   surahId,
   arabicAyahs,
   translationAyahs,
+
+  onNextSurah,
+  onPrevSurah,
+
   arabicFontSize: propArabicFontSize,
   translationFontSize: propTranslationFontSize,
   translationLanguage: propTranslationLanguage,
@@ -76,10 +83,10 @@ export default function ReadingClient({
       : 'font-translation-en')
 
   return (
-    <>
+    < div className='w-full overflow-visible'>
       {arabicAyahs.map((ayah, index) => (
         <AyahCard
-          key={ayah.number}
+          key={`${surahId}-${ayah.numberInSurah ?? ayah.number ?? index}-${index}`}
           surahId={surahId}
           ayahNumber={ayah.numberInSurah}
           arabic={ayah.text}
@@ -92,6 +99,29 @@ export default function ReadingClient({
           active={false}
         />
       ))}
-    </>
+      <div className="mt-10 flex justify-center">
+  <div className="flex items-center gap-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 px-6 py-4 shadow-sm backdrop-blur-md">
+    
+    {/* Previous */}
+    <button
+      onClick={() => onPrevSurah?.()}
+      className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition"
+    >
+      <span className="text-lg">←</span>
+      Previous
+    </button>
+
+    {/* Divider / center info */}
+    {/* Next */}
+    <button
+      onClick={() => onNextSurah?.()}
+      className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition"
+    >
+      Next
+      <span className="text-lg">→</span>
+    </button>
+  </div>
+</div>
+    </div>
   )
 }

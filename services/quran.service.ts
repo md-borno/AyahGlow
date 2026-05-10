@@ -2,6 +2,17 @@ import { Surah } from '@/types/surah'
 
 const BASE_URL = 'https://api.alquran.cloud/v1'
 
+const TRANSLATION_EDITIONS = {
+  english: 'en.asad',
+  bangla: 'bn.bengali',
+} as const
+
+type TranslationLanguage = keyof typeof TRANSLATION_EDITIONS
+
+function getTranslationEdition(language: TranslationLanguage) {
+  return TRANSLATION_EDITIONS[language] ?? TRANSLATION_EDITIONS.english
+}
+
 async function fetchWithRetry(url: string, options: RequestInit = {}, retries = 3) {
   for (let attempt = 1; attempt <= retries; attempt += 1) {
     const res = await fetch(url, options)
@@ -36,14 +47,17 @@ export async function getSurahs(): Promise<Surah[]> {
   return data.data
 }
 
-export async function getSurah(id: number) {
+export async function getSurah(
+  id: number,
+  translationLanguage: TranslationLanguage = 'english'
+) {
   const [arabicRes, translationRes] = await Promise.all([
     fetchWithRetry(`${BASE_URL}/surah/${id}/quran-uthmani`, {
       next: {
         revalidate: 3600,
       },
     }),
-    fetchWithRetry(`${BASE_URL}/surah/${id}/en.asad`, {
+    fetchWithRetry(`${BASE_URL}/surah/${id}/${getTranslationEdition(translationLanguage)}`, {
       next: {
         revalidate: 3600,
       },
@@ -63,10 +77,24 @@ export async function getSurah(id: number) {
   }
 }
 
-export async function getJuz(id: number) {
-  const res = await fetch(`/api/juz/${id}`)
+export async function getJuz(
+  id: number,
+  translationLanguage: TranslationLanguage = 'english'
+) {
+  const res = await fetch(`/api/juz/${id}?lang=${translationLanguage}`)
 
   if (!res.ok) throw new Error('Failed to fetch Juz')
+
+  return res.json()
+}
+
+export async function getPage(
+  page: number,
+  translationLanguage: TranslationLanguage = 'english'
+) {
+  const res = await fetch(`/api/page/${page}?lang=${translationLanguage}`)
+
+  if (!res.ok) throw new Error('Failed to fetch page')
 
   return res.json()
 }

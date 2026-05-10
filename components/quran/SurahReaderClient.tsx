@@ -19,11 +19,15 @@ interface Props {
       ayahs: any[]
     }
   }
-}
 
+  onNextSurah?: () => void
+  onPrevSurah?: () => void
+}
 export default function SurahReaderClient({
   surahId,
   data,
+  onNextSurah,
+  onPrevSurah,
 }: Props) {
   const {
     arabicFontFamily,
@@ -52,15 +56,17 @@ export default function SurahReaderClient({
         englishNameTranslation={data.arabic.englishNameTranslation}
       />
       <ReadingClient
-        surahId={surahId}
-        arabicAyahs={data.arabic.ayahs}
-        translationAyahs={data.translation.ayahs}
-        arabicFontSize={arabicFontSize}
-        translationFontSize={translationFontSize}
-        translationLanguage={translationLanguage}
-        arabicFontClass={arabicFontClass}
-        translationFontClass={translationFontClass}
-      />
+  surahId={surahId}
+  arabicAyahs={data.arabic.ayahs}
+  translationAyahs={data.translation.ayahs}
+  arabicFontSize={arabicFontSize}
+  translationFontSize={translationFontSize}
+  translationLanguage={translationLanguage}
+  arabicFontClass={arabicFontClass}
+  translationFontClass={translationFontClass}
+  onNextSurah={onNextSurah}
+  onPrevSurah={onPrevSurah}
+/>
     </>
   )
 }

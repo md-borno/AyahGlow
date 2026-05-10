@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 
-async function getSurah(id: number) {
+async function getSurah(id: number, lang: string) {
   const arabicRes = await fetch(
     `https://api.alquran.cloud/v1/surah/${id}/ar.alafasy`
   );
 
+  const translationEdition = lang === 'bangla' ? 'bn.bengali' : 'en.asad'
   const translationRes = await fetch(
-    `https://api.alquran.cloud/v1/surah/${id}/en.asad`
+    `https://api.alquran.cloud/v1/surah/${id}/${translationEdition}`
   );
 
   const a = await arabicRes.json();
@@ -48,11 +49,12 @@ export async function GET(req: Request) {
   const q =
     searchParams.get("q")?.toLowerCase() ||
     "";
+  const lang = searchParams.get('lang') === 'bangla' ? 'bangla' : 'english'
 
   const results: unknown[] = [];
 
   for (let i = 1; i <= 114; i++) {
-    const { surah, ayahs } = await getSurah(i);
+    const { surah, ayahs } = await getSurah(i, lang);
 
     const filtered = ayahs.filter(
       (a: any) =>

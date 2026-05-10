@@ -29,17 +29,22 @@ export default function AyahCard({
   arabicFontClass,
   active,
 }: Props) {
+  const toArabicNumber = (num: number) => {
+    return num.toString().replace(/\d/g, (d) =>
+      '٠١٢٣٤٥٦٧٨٩'[parseInt(d)]
+    )
+  }
   return (
     <div
       className={clsx(
-        'flex justify-between bg-white dark:bg-[#0f172a] p-3 transition-all border-b border-gray-200',
+        'flex justify-between bg-white dark:bg-[#0D0D0D] p-3 transition-all border-b border-gray-200',
         active && 'shadow-lg shadow-green-500/10'
       )}
     >
       {/* Header */}
       <div className="grid items-start justify-between ">
         {/* SIDE: Ayah number */}
-        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center font-semibold">
+        <div className="w-10 h-10 text-green-400 flex items-center justify-center font-semibold">
           {ayahNumber}:{surahId}
         </div>
         {/* LEFT SIDE: Actions (now vertical) */}
@@ -55,12 +60,14 @@ export default function AyahCard({
 
       <div>
         {/* Arabic Text */}
+        
         <p
-          className={`mb-5 text-right leading-[110px] dark:text-gray-300 ${arabicFontClass ?? 'font-arabic-amiri '
+          className={`flex items-center gap-2 mb-5 text-right leading-[110px] dark:text-gray-300 ${arabicFontClass ?? 'font-arabic-amiri '
             }`}
           style={{ fontSize: arabicFontSize }}
-        >
-          {arabic}
+        >{arabic}<span className="w-12 h-12 rounded-full flex items-center justify-center font-arabic-amiri text-lg font-bold text-black dark:text-green-400">
+  ۝{toArabicNumber(ayahNumber)}
+</span>
         </p>
 
         {/* Translation */}

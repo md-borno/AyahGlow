@@ -1,37 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AyahGlow
 
-## Getting Started
+AyahGlow is a Quran reading and search experience built with Next.js, React, and Tailwind CSS. It provides a clean interface for browsing Surahs, searching Ayahs, and listening to audio recitations.
 
-First, run the development server:
+## Live Demo
+
+- Website: https://ayahglow.netlify.app/
+- GitHub Repository: https://github.com/md-borno/AyahGlow.git
+- Video Recording: [Add your recording link here]
+
+## Screenshots
+
+> Add screenshots here to show the app UI, search view, Surah reader, or audio player.
+
+- `Homepage / Surah list`
+- `Surah reader and audio controls`
+- `Search results and navigation`
+
+## Features
+
+- Browse Quran Surahs and Ayahs
+- Search through Ayah text and translations
+- Audio playback for Ayahs
+- Responsive interface for desktop and mobile
+- Server route-based API endpoints for surah, juz, and search data
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS
+- Zustand for state management
+- React Query for data fetching
+- Fuse.js for fuzzy search
+
+## Installation
+
+```bash
+git clone https://github.com/md-borno/AyahGlow.git
+cd AyahGlow
+npm install
+```
+
+## Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
+- The project builds successfully after fixing the TypeScript type issue in `types/surah.ts`.
+- If you want to add screenshot images, place them in the repository and update this README with relative image links.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Contribution
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Contributions and improvements are welcome. Feel free to open issues or submit pull requests on the GitHub repository.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is available under the terms of the license chosen by the repository owner.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# AyahGlow

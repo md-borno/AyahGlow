@@ -8,8 +8,7 @@ export interface Surah {
 }
 
 export interface JuzSurah {
-  surahs: any
-  number: number | undefined
+  number: number
   surahNumber: number
   surahName: string
   ayahs: {
@@ -21,5 +20,6 @@ export interface JuzSurah {
 
 export interface JuzResponse {
   juz: number
+  number: number
   surahs: JuzSurah[]
 }

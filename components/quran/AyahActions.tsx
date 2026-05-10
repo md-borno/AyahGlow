@@ -20,7 +20,7 @@ export default function AyahActions({
   totalAyahs,
 }: Props) {
   return (
-    <div className="flex flex-col items-start gap-3">
+    <div className="flex flex-col items-start mb-1">
       
       {/* Audio Player */}
       <AyahButtonPlayer

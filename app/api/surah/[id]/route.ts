@@ -6,13 +6,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const { searchParams } = new URL(req.url);
+    const lang = searchParams.get('lang') === 'bangla' ? 'bangla' : 'english'
+    const translationEdition = lang === 'bangla' ? 'bn.bengali' : 'en.asad'
 
     const arabicRes = await fetch(
       `https://api.alquran.cloud/v1/surah/${id}/ar.alafasy`
     );
 
     const translationRes = await fetch(
-      `https://api.alquran.cloud/v1/surah/${id}/en.asad`
+      `https://api.alquran.cloud/v1/surah/${id}/${translationEdition}`
     );
 
     if (!arabicRes.ok || !translationRes.ok) {
