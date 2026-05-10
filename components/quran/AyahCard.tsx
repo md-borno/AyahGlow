@@ -37,7 +37,7 @@ export default function AyahCard({
   return (
     <div
   className={clsx(
-    'flex  justify-between bg-white dark:bg-[#0D0D0D] p-3 transition-all border-b border-gray-200',
+    'flex justify-between bg-white dark:bg-[#0D0D0D] p-3 transition-all border-b border-gray-200',
     active && 'shadow-lg shadow-green-500/10'
   )}
 >

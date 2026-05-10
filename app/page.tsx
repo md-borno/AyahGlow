@@ -409,7 +409,7 @@ export default function HomePage() {
   // Shared: Settings accordions
   // ─────────────────────────────────────────
   const SettingsPanel = (
-    <div >
+    <div>
       {/* Translation / Reading mode toggle */}
       <div className="flex gap-1 p-1 mb-5 bg-gray-100 dark:bg-gray-800 rounded-full">
         {['Translation', 'Reading'].map((mode) => (

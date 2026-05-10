@@ -1,19 +1,27 @@
 import './globals.css'
 import QueryProvider from '@/providers/query-provider'
 import { SettingsProvider } from '@/providers/settings-provider'
-
+export const metadata = {
+  title: 'AyahGlow',
+  description: 'Modern Quran Reading Experience',
+  icons: {
+    icon: '/favicon.ico',
+  },
+}
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <div >
+      <html lang="en" suppressHydrationWarning>
       <body>
-        <SettingsProvider>
+        <SettingsProvider >
           <QueryProvider>{children}</QueryProvider>
         </SettingsProvider>
       </body>
     </html>
+    </div>
   )
 }
